@@ -1,0 +1,78 @@
+
+body {
+    background: #e8cbc0;
+    background: -webkit-linear-gradient(to right, #e8cbc0, #636fa4);
+    background: linear-gradient(to right, #e8cbc0, #636fa4);
+    min-height: 100vh;
+}
+
+.row{
+  margin: 10px;
+}
+
+/*
+
+.multiselect {
+  width: 200px;
+}
+
+.selectBox {
+  position: relative;
+}
+
+.selectBox select {
+  width: 100%;
+  font-weight: bold;
+}
+
+.overSelect {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#checkboxes {
+  display: none;
+  border: 1px #dadada solid;
+    background-color: white;
+
+}
+
+#checkboxes label {
+  display: block;
+}
+
+#checkboxes label:hover {
+  background-color: #1e90ff;
+}
+#checkboxes1 {
+  display: none;
+  border: 1px #dadada solid;
+  background-color: white;
+}
+
+#checkboxes1 label {
+  display: block;
+}
+
+#checkboxes1 label:hover {
+  background-color: #1e90ff;
+
+}
+
+
+#============================
+#container {
+  min-width: 310px;
+  max-width: 800px;
+  height: 400px;
+  margin: 0 auto
+}
+#container1 {
+  min-width: 310px;
+  max-width: 800px;
+  height: 400px;
+  margin: 0 auto
+}*/

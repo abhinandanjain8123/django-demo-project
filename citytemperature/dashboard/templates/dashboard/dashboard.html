@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static  %}
+
+{% block link_and_script %}
+ 
+  <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}" type="text/css" media="screen" />
+
+{% endblock %}
+
+{% block content %}
+
+<!-- <div id="chart-A" class="chartA"></div> -->
+
+<br/>
+<div class="container-fluid">
+  <div class="row">
+         <div class="col-lg-1">
+             <div class="button-group">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                  Years<span class="glyphicon glyphicon-cog"></span> <span class="caret"></span></button>
+                      <ul class="dropdown-menu" id="dropdown1">
+                        {% for entry in years %}
+                        <li><a href="#" class="small" data-value="{{entry}}" tabIndex="-1"><input type="checkbox"/>{{entry}}</a></li>
+                        {% endfor %}
+                      </ul>
+             </div>
+        </div>
+        <div class="col-lg-1">
+           <div class="button-group">
+              <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                Cities<span class="glyphicon glyphicon-cog"></span> <span class="caret"></span></button>
+                <ul class="dropdown-menu" id="dropdown2">
+                  {% for entry in cities %}
+                  <li><a href="#" class="small" data-value="{{entry}}" tabIndex="-1"><input type="checkbox"/>{{entry}}</a></li>
+                  {% endfor %}
+                </ul>
+          </div>
+      </div>
+      <div class="col-lg-4">
+
+        <button type="button"  id="clickbutton" class="btn btn-primary" >GO</button>
+
+      </div>
+  </div>
+</div>
+
+    
+<div class="container-fluid">
+    <div class="row">
+         <div class="col-sm-6">
+            <div id="container"></div>
+    </div>
+    
+         <div class="col-sm-6">
+        <div id="container1" class="container1"></div>
+    </div>
+   
+</div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+{% block jquery %}
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="{% static 'dashboard/js/script.js' %}"></script>
+<script>
+
+    var city_list = JSON.parse('{{ city_list | escapejs }}');
+    var year_list = JSON.parse('{{ years_list | escapejs }}');
+    var temp_list = JSON.parse('{{ temp_list | escapejs }}');
+    var temp_avg_by_city = JSON.parse('{{ temp_avg_by_city | escapejs }}');
+    var city_temp_list = JSON.parse('{{ city_temp_year | escapejs}}');
+    var drilldown_series_1 = JSON.parse('{{ drilldown_series_1 | escapejs }}')
+
+    var years_list = [];
+    var cities_list = [];
+    
+    // HighChart to display average temperature by years
+    $(document).ready(function(){
+
+        chartA(year_list,temp_list)
+    });
+
+    // HighChart to display average temperature by city name
+    $(document).ready(function(){
+        chartB(city_temp_list,drilldown_series_1)
+    });
+       
+    //DropDown Checkbox Filter for Years and returns list of selected years 
+    $( '#dropdown1 a' ).on( 'click', function( event ) {
+
+       var $target = $( event.currentTarget ),
+           val = $target.attr( 'data-value' ),
+           $inp = $target.find( 'input' ),
+           idx;
+
+       if ( ( idx = years_list.indexOf( val ) ) > -1 ) {
+          years_list.splice( idx, 1 );
+          setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
+       } else {
+          years_list.push( val );
+          setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
+       }
+
+       $( event.target ).blur();
+          
+       return false;
+    });
+
+    //DropDown Checkbox Filter for City and returns list of selected cities
+    $( '#dropdown2 a' ).on( 'click', function( event ) {
+
+       var $target = $( event.currentTarget ),
+           val = $target.attr( 'data-value' ),
+           $inp = $target.find( 'input' ),
+           idx;
+
+       if ( ( idx = cities_list.indexOf( val ) ) > -1 ) {
+          cities_list.splice( idx, 1 );
+          setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
+       } else {
+          cities_list.push( val );
+          setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
+       }
+
+       $( event.target ).blur();
+          
+       return false;
+    });
+
+    //Django basic setup for accepting ajax requests.
+// Cookie obtainer Django
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    // Setup ajax connections safetly
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    //This function is trigered when 'GO' button is clicked 
+    $(document).ready(function(){
+      $("#clickbutton").on("click", function(){
+
+             $.ajax({
+                  url: '/dashboard/filter/',
+                  data:{ 'filter_city_list':cities_list,'filter_year_list':years_list },
+                  dataType: 'json',
+                  type: 'POST',
+                  success: function(data) {
+
+
+                    var years_list =JSON.parse(data['year_list_data']);
+                    var temp_avg_by_year = JSON.parse(data['temp_avg_by_year']);
+                    var drilldown_series_1 = JSON.parse(data['drilldown_series_1'])
+                    var temp_l=JSON.parse(data['temp_l'])
+                    
+                    var year_count = Object.keys(years_list).length;
+                    var city_count = Object.keys(cities_list).length;
+
+
+                    if(year_count>0){
+                       chartA(years_list,temp_avg_by_year)
+                     } 
+
+                    if(city_count >0 ){
+                       chartB(temp_l,drilldown_series_1)
+                     }
+                  },
+
+                  error: function (request, error) {
+                    console.log(arguments);
+                    alert(" Can't do because: " + error);
+                 }
+              });
+        });
+    });
+
+</script>
+
+  
+
+
+{% endblock %}
