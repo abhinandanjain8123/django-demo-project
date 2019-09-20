@@ -1,5 +1,5 @@
 # django-demo-project
-This project consist of Highcharts with ajax query 
+This project consist of Highcharts and drilldown with ajax query 
 
 Prerequirment for this project to run :
  1)Install Python3,pip
