@@ -10,8 +10,6 @@ Prerequirment for this project to run :
          source my_env/bin/activate
    After executing folllowing commands, terminal should look like
         (my_env) username@username:~/YOUR_DIRECTORY-PATH
-
  3)Run the requirment.txt file (it contain django intallation command) : python install -r requirment.txt 
-  
- 4) To run the project : Go to directory where manage.py file exist and run the command : python manage.py runserver 
+ 4)To run the project : Go to directory where manage.py file exist and run the command : python manage.py runserver 
 
