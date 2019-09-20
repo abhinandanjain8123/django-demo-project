@@ -6,7 +6,6 @@ Prerequirment for this project to run :
  2)Create Virtual environment
       commands to create virtual env: (Go to the project directory and below four commands)
          pip install virtualenv 
-         ~/.profile
          virtualenv -p /usr/bin/python3 my_env
          source my_env/bin/activate
    After executing folllowing commands, terminal should look like
