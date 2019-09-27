@@ -3,8 +3,8 @@ This project consist of Signin , Signup , Highcharts and drilldown with ajax que
 
 Prerequirment for this project to run :
  1)Install Python3,pip
- 2)Create Virtual environment
-      commands to create virtual env: (Go to the project directory and below four commands)
+ 2)Create Virtual environment 
+      commands to create virtual env: (Go to the project directory and run below four commands)
          pip install virtualenv 
          virtualenv -p /usr/bin/python3 my_env
          source my_env/bin/activate
